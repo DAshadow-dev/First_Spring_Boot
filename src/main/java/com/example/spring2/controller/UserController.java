@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.spring2.dto.request.ApiResponse;
 import com.example.spring2.dto.request.UserCreationRequest;
 import com.example.spring2.dto.request.UserUpdateRequest;
+import com.example.spring2.dto.response.UserResponse;
 import com.example.spring2.entity.User;
 import com.example.spring2.service.UserService;
 
@@ -20,8 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-
-
 
 @RestController
 @RequestMapping("/users")
@@ -43,12 +42,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    User getUser(@PathVariable("id") String id){
+    UserResponse getUser(@PathVariable("id") String id){
         return userService.getUser(id);
     }
 
     @PutMapping("/{id}")
-    User updateUser(@PathVariable("id") String id,@RequestBody UserUpdateRequest request){
+    UserResponse updateUser(@PathVariable("id") String id,@RequestBody UserUpdateRequest request){
         return userService.updateUser(id,request);
     }
 

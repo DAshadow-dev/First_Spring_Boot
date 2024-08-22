@@ -1,7 +1,5 @@
 package com.example.spring2.dto.request;
 
-import java.time.LocalDate;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,9 +8,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserUpdateRequest {
+public class AuthenticationRequest {
+    String username;
     String password;
-    String firstName;
-    String lastName;
-    LocalDate dob;
 }
