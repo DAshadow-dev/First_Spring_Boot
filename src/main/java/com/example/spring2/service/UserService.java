@@ -1,9 +1,9 @@
 package com.example.spring2.service;
 
+import java.util.HashSet;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,21 +11,26 @@ import com.example.spring2.dto.request.UserCreationRequest;
 import com.example.spring2.dto.request.UserUpdateRequest;
 import com.example.spring2.dto.response.UserResponse;
 import com.example.spring2.entity.User;
+import com.example.spring2.enums.Role;
 import com.example.spring2.exception.AppException;
 import com.example.spring2.exception.ErrorCode;
 import com.example.spring2.mapper.UserMapper;
 import com.example.spring2.repository.UserRepository;
+import com.nimbusds.jose.proc.SecurityContext;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true )
+@Slf4j
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
     public User createUser(UserCreationRequest request){
         if(userRepository.existsByUsername(request.getUsername()))
@@ -33,8 +38,12 @@ public class UserService {
         
         User user = userMapper.toUser(request);
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+
+        user.setRoles(roles);
 
         return userRepository.save(user);
     }
@@ -48,6 +57,12 @@ public class UserService {
     }
 
     public List<User> getUsers(){
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("Username : {}",authentication.getName());
+        authentication.getAuthorities().forEach(t -> log.info(t.getAuthority()));
+
         return userRepository.findAll();
     }
 
@@ -58,5 +73,6 @@ public class UserService {
 
     public void deleteUser(String id){
         userRepository.deleteById(id);
+
     }
 }

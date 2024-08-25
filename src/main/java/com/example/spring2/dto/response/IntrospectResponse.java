@@ -1,8 +1,5 @@
 package com.example.spring2.dto.response;
 
-import java.time.LocalDate;
-import java.util.Set;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,11 +8,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
-    String id;
-    String username;
-    String firstName;
-    String lastName;
-    LocalDate dob;
-    Set<String> roles;
+public class IntrospectResponse {
+    boolean valid;
 }
