@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 
 @RestController
@@ -42,8 +40,10 @@ public class UserController {
     }
 
     @GetMapping
-    List<User> getUsers(){
-        return userService.getUsers();
+    ApiResponse<List<UserResponse>> getUsers(){
+        return ApiResponse.<List<UserResponse>>builder()
+                .result(userService.getUsers())
+                .build();
     }
 
     @GetMapping("/{id}")
@@ -58,16 +58,28 @@ public class UserController {
 
         return userService.getUser(userId);
     }
+
+    @GetMapping("/myInfo")
+    public ApiResponse<UserResponse> getMyInfo() {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getInfo())
+                .build();
+    }
+    
     
 
     @PutMapping("/{id}")
-    UserResponse updateUser(@PathVariable("id") String id,@RequestBody UserUpdateRequest request){
-        return userService.updateUser(id,request);
+    ApiResponse<UserResponse> updateUser(@PathVariable("id") String id,@RequestBody UserUpdateRequest request){
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateUser(id,request))
+                .build();
     }
 
     @DeleteMapping("/{id}")
-    String deleteUser(@PathVariable("id") String id){
+    ApiResponse<String> deleteUser(@PathVariable("id") String id){
         userService.deleteUser(id);
-        return "User has been deleted";
+        return ApiResponse.<String>builder()
+                .result("User has been deleted")
+                .build();
     }
 }

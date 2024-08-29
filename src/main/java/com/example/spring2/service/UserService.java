@@ -3,6 +3,8 @@ package com.example.spring2.service;
 import java.util.HashSet;
 import java.util.List;
 
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,6 @@ import com.example.spring2.exception.AppException;
 import com.example.spring2.exception.ErrorCode;
 import com.example.spring2.mapper.UserMapper;
 import com.example.spring2.repository.UserRepository;
-import com.nimbusds.jose.proc.SecurityContext;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -56,19 +57,31 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    public List<User> getUsers(){
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UserResponse> getUsers(){
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         log.info("Username : {}",authentication.getName());
         authentication.getAuthorities().forEach(t -> log.info(t.getAuthority()));
 
-        return userRepository.findAll();
+        return userRepository.findAll().stream().map(u -> userMapper.toUserResponse(u)).toList();
     }
 
+    @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getUser(String id){
         return userMapper.toUserResponse(userRepository.findById(id)
         .orElseThrow(() -> new RuntimeException(("User not found"))));
+    }
+
+    public UserResponse getInfo(){
+        var context = SecurityContextHolder.getContext();
+        String username = context.getAuthentication().getName();
+        log.info(username);
+        User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        
+        return userMapper.toUserResponse(user);
     }
 
     public void deleteUser(String id){
