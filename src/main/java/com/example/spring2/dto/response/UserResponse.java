@@ -3,6 +3,8 @@ package com.example.spring2.dto.response;
 import java.time.LocalDate;
 import java.util.Set;
 
+import com.example.spring2.entity.Role;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,5 +19,5 @@ public class UserResponse {
     String firstName;
     String lastName;
     LocalDate dob;
-    Set<String> roles;
+    Set<Role> roles;
 }

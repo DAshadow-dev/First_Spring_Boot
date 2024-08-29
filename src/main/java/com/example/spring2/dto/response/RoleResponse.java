@@ -1,12 +1,7 @@
-package com.example.spring2.entity;
+package com.example.spring2.dto.response;
 
 import java.util.Set;
 
-import org.hibernate.annotations.ManyToAny;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,16 +10,12 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity
-public class Role {
-    @Id
+public class RoleResponse {
     String name;
     String description;
-
-    @ManyToMany
-    Set<Permission> permissions;
+    Set<PermissionResponse> permissions;
 }
