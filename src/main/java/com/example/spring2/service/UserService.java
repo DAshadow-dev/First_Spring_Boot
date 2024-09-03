@@ -17,6 +17,7 @@ import com.example.spring2.enums.Role;
 import com.example.spring2.exception.AppException;
 import com.example.spring2.exception.ErrorCode;
 import com.example.spring2.mapper.UserMapper;
+import com.example.spring2.repository.RoleRepository;
 import com.example.spring2.repository.UserRepository;
 
 import lombok.AccessLevel;
@@ -30,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserService {
     UserRepository userRepository;
+    RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
 
@@ -53,6 +55,10 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException(("User not found")));
 
         userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        var roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
