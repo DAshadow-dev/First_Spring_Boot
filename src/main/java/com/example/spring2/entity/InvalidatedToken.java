@@ -1,28 +1,26 @@
 package com.example.spring2.entity;
 
-import java.util.Set;
+import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-public class Role {
+public class InvalidatedToken {
     @Id
-    String name;
-    String description;
-
-    @ManyToMany
-    Set<Permission> permissions;
+    String id;
+    Date expiryTime;
 }

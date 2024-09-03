@@ -42,6 +42,7 @@ public class GlobalExceptionHandler {
             .body(apiResponse);
     }
 
+    @SuppressWarnings("rawtypes")
     @ExceptionHandler(value = AccessDeniedException.class)
     ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException accessDeniedException){
         ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
@@ -55,8 +56,10 @@ public class GlobalExceptionHandler {
                 .build());
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse> handlingValidation(MethodArgumentNotValidException exception){
+        @SuppressWarnings("null")
         String enumKey = exception.getFieldError().getDefaultMessage();
 
         ErrorCode errorCode = ErrorCode.INVALID_KEY;
